@@ -1,0 +1,64 @@
+{
+  "name": "be-project-authentication",
+  "version": "1.0.2",
+  "description": "Authentication service for the BE-Project stack",
+  "main": "index.js",
+  "scripts": {
+    "start:develop": "NODE_ENV=development nodemon --exec babel-node src/index.js",
+    "start": "node src/index.js",
+    "build": "npm run clean && babel ./src --out-dir dist",
+    "clean": "rm -rf ./dist && mkdir dist",
+    "pretest": "eslint src",
+    "test": "NODE_ENV=development SECRET=sec nyc --reporter=html --reporter=lcov ava --verbose --timeout=10s;",
+    "posttest": "nyc report --reporter=text && nyc check-coverage --lines 80 --functions 80 --branches 75",
+    "dev": "SECRET=sec ava --verbose --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hild-Franck/BE-Project-authentication.git"
+  },
+  "keywords": [
+    "auth"
+  ],
+  "author": "Hild Franck <franck.hild@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hild-Franck/BE-Project-authentication/issues"
+  },
+  "homepage": "https://github.com/Hild-Franck/BE-Project-authentication#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "ava": "^1.4.1",
+    "eslint": "^5.16.0",
+    "nodemon": "^1.18.11",
+    "nyc": "^14.0.0"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.test.js"
+    ],
+    "require": [
+      "@babel/register"
+    ]
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.3",
+    "cookie": "^0.4.1",
+    "event-emitter": "^0.3.5",
+    "hash.js": "^1.1.7",
+    "jsonwebtoken": "^8.5.1",
+    "moleculer": "^0.14.13",
+    "nats": "^1.4.12",
+    "pg": "^8.5.1",
+    "redis": "^3.1.2",
+    "sequelize": "^6.6.2",
+    "uuid": "^8.3.2",
+    "winston": "^3.2.1",
+    "ws": "^7.4.6"
+  }
+}

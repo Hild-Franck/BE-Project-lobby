@@ -1,0 +1,54 @@
+language: node_js
+
+node_js:
+- node
+
+addons:
+  ssh_known_hosts: 52.70.188.82
+
+env:
+  global:
+  - CC_TEST_REPORTER_ID=9fe8916d10e099f6bdc1b7f1bd9626fad6f4e799f567b4889125c09127617542
+  - NODE_ENV=ci
+  - SERVER='52.70.188.82'
+  - DATABASE=test
+  - POSTGRES_USER=postgres
+  - POSTGRES_PASSWORD=""
+  
+services:
+- postgresql
+cache:
+  directories:
+  - node_modules
+branches:
+  only:
+  - master
+  - staging
+  - develop
+
+install:
+- npm install
+
+before_script:
+  - psql -c 'create database test;' -U postgres
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+- npm test
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_97069491716d_key -iv $encrypted_97069491716d_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+
+# deploy:
+#   provider: script
+#   script: bash scripts/deploy.bash
+#   on:
+#     branch: master
