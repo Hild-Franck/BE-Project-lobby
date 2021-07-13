@@ -19,6 +19,7 @@ const controllers = {
 			"roundDuration", data.roundDuration || 10,
 			"maxPlayers", data.maxPlayers || 10,
 			"numberOfRounds", data.numberOfRounds || 10,
+			"difficulty", data.difficulty || 0,
 			"players", 1,
 			"full", false,
 			"state", "PENDING"
