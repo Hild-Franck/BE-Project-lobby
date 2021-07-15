@@ -3,7 +3,9 @@ import { promisify } from 'util'
 
 import logger from './logger'
 
-const client = redis.createClient({ host: 'localhost' })
+const client = redis.createClient({
+	host: process.env.REDIS_HOST || 'localhost'
+})
 
 client.on("error", err => logger.error(err.message))
 
