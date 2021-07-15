@@ -15,11 +15,11 @@ const controllers = {
 			"id", id,
 			"owner", user.username,
 			"private", !!data.private,
-			"type", data.type,
+			"type", data.type ?? 0,
 			"roundDuration", data.roundDuration || 10,
 			"maxPlayers", data.maxPlayers || 10,
 			"numberOfRounds", data.numberOfRounds || 10,
-			"difficulty", data.difficulty || 0,
+			"difficulty", data.difficulty ?? 0,
 			"players", 1,
 			"full", false,
 			"state", "PENDING"
