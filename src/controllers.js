@@ -4,12 +4,14 @@ import database from './database'
 import broker from './broker'
 import logger from './logger'
 
+const modes = [ "normal", "br" ]
+
 const controllers = {
 	CREATE_LOBBY: async (data, user) => {
 		const id = uuidv4()
 		const lobby = {
 			id, owner: user.username, private: !!data.private, type: data.type,
-			state: "PENDING", maxPlayers: data.maxPlayers || 2, players: 1, mode: data.mode || "normal"
+			state: "PENDING", maxPlayers: data.maxPlayers || 2, players: 1, mode: modes[data.mode] || "normal"
 		}
 		await database.hmset(id,
 			"id", id,
@@ -20,7 +22,7 @@ const controllers = {
 			"maxPlayers", data.maxPlayers || 10,
 			"numberOfRounds", data.numberOfRounds || 10,
 			"difficulty", data.difficulty ?? 0,
-			"mode", data.mode || 0,
+			"mode", modes[data.mode] || "normal",
 			"players", 1,
 			"full", false,
 			"state", "PENDING"
