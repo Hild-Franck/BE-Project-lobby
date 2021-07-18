@@ -47,8 +47,9 @@ const controllers = {
 		return { lobby, players, type: "LOBBY_JOINED" }
 	},
 	START_GAME: async (data, user) => {
+		const players = await database.smembers(`players:${data.lobby}`)
 		await broker.call("game.start", {
-			lobby: data.lobby, username: user.username
+			lobby: data.lobby, username: user.username, players
 		})
 		return { success: true, type: "GAME_STARTING" }
 	},
