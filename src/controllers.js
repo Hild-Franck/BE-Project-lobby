@@ -46,6 +46,13 @@ const controllers = {
 		})
 		return { lobby, players, type: "LOBBY_JOINED" }
 	},
+	LEAVE_LOBBY: async (data, user) => {
+		logger.info(`${user.username} left lobby ${data.lobby} !`)
+		broker.broadcast(`lobby.leave`, {
+			type: 'PLAYER_LEFT', username: user.username, id: data.lobby
+		})
+		return { type: "LOBBY_LEFT" }
+	},
 	START_GAME: async (data, user) => {
 		const players = await database.smembers(`players:${data.lobby}`)
 		await broker.call("game.start", {

@@ -29,6 +29,8 @@ wss.on('connection', function connection(ws, request) {
 					state.setEvent(result.lobby.id)
 				}
 				if (result) ws.send(JSON.stringify(result))
+				// TODO: Remove event listener
+				if (data.type == "LEAVE_LOBBY") ws.terminate()
 			}
 		} catch (err) {
 			console.log(err)
@@ -41,7 +43,7 @@ wss.on('connection', function connection(ws, request) {
 		const currentLobby = await database.get(request.user.username)
 		if (currentLobby) {
 			const players = await database.hincrby(currentLobby, "players", -1)
-			if (players === 0) {
+			if (players <= 0) {
 				await database.del(currentLobby)
 				await database.srem("lobbies", currentLobby)
 			}
