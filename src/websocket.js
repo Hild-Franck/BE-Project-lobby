@@ -14,14 +14,14 @@ const wss = new WebSocket.Server({ noServer: true })
 //TODO: Destroy event listener after connection loss
 
 wss.on('connection', function connection(ws, request) {
-	logger.info(`New client connected - ${request.user}`, request.user.username)
+	logger.info(`New client connected - ${request.user.username}`)
 	const state = {
 		setEvent: id => event.on(id, data => ws.send(JSON.stringify(data)))
 	}
 	ws.on('message', async function message(msg) {
 		try {
-			logger.debug(`New message from ${request.user.username} of type ${data.type}`)
 			const data = JSON.parse(msg)
+			logger.debug(`New message from ${request.user.username} of type ${data.type}`)
 			const controller = controllers[data.type]
 			if (controller) {
 				const result = await controller(data.payload, request.user)
