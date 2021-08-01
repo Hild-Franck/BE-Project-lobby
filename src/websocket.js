@@ -20,12 +20,13 @@ wss.on('connection', function connection(ws, request) {
 	}
 	ws.on('message', async function message(msg) {
 		try {
+			logger.debug(`New message from ${request.user.username} of type ${data.type}`)
 			const data = JSON.parse(msg)
 			const controller = controllers[data.type]
 			if (controller) {
 				const result = await controller(data.payload, request.user)
 				if (["CREATE_LOBBY", "JOIN_LOBBY"].includes(data.type)) {
-					logger.info(`Creating local event lister for ${result.id}`)
+					logger.debug(`Creating local event lister for ${request.user.username}`)
 					state.setEvent(result.lobby.id)
 				}
 				if (result) ws.send(JSON.stringify(result))
@@ -33,13 +34,12 @@ wss.on('connection', function connection(ws, request) {
 				if (data.type == "LEAVE_LOBBY") ws.terminate()
 			}
 		} catch (err) {
-			console.log(err)
 			logger.error(err.message)
 			ws.send(JSON.stringify({ error: err.message }))
 		}
 	})
 	ws.on('close', async function () {
-		logger.info(`Connection lost by ${request.user.username}`)
+		logger.info(`Connection closed for ${request.user.username}`)
 		const currentLobby = await database.get(request.user.username)
 		if (currentLobby) {
 			const players = await database.hincrby(currentLobby, "players", -1)
@@ -61,6 +61,7 @@ server.on('upgrade', async function upgrade(request, socket, head) {
 			wss.emit('connection', ws, request)
 		})
 	} catch(err) {
+		logger.error(`Error establishing ws connection: ${err.message}`)
 		socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
 		socket.destroy()
 		return

@@ -14,7 +14,6 @@ const service = {
 	actions: { getall },
 	events: {
 		"lobby.*"(data) {
-			logger.info(`Received broker event ${data.id}`)
 			event.emit(data.id, data)
 		}
 	},
