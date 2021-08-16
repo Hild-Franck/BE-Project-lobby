@@ -11,7 +11,8 @@ const controllers = {
 		const id = uuidv4()
 		const lobby = {
 			id, owner: user.username, private: !!data.private, type: data.type,
-			state: "PENDING", maxPlayers: data.maxPlayers || 2, players: 1, mode: modes[data.mode] || "normal"
+			state: "PENDING", maxPlayers: data.maxPlayers || 2, players: 1,
+			mode: modes[data.mode] || "normal", numberOfLives: data.numberOfLives || 3
 		}
 		await database.hmset(id,
 			"id", id,
@@ -21,6 +22,7 @@ const controllers = {
 			"roundDuration", data.roundDuration || 10,
 			"maxPlayers", data.maxPlayers || 10,
 			"numberOfRounds", data.numberOfRounds || 10,
+			"numberOfLives", data.numberOfLives || 3,
 			"difficulty", data.difficulty ?? 0,
 			"mode", modes[data.mode] || "normal",
 			"players", 1,
